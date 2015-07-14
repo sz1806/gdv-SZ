@@ -2,7 +2,7 @@
 <html lang="de">
 
 	<head>
-		<meta charset="utf-8">	
+		<meta charset="utf-8">
 		<meta name="author" content="Stefanie Zahn">
 		<title> Spacetacular - a three.js game </title>
 		<link href="style.css" rel="stylesheet" type="text/css">
@@ -10,8 +10,41 @@
 
 	<body>
 		<script src="js/three.min.js"></script>
-	
+		//Kamerasteuerung per Maus zu Debugzwecken; in offizieller three.js Bibliothek enthalten
+		<script src="js/OrbitControl.js"></script>
 
+		<script>
+			//Szene
+			var scene = new THREE.Scene();
+
+			//Kamera
+			var WIDTH = window.innerWidth;
+			var HEIGHT = window.innerHeight;
+			var camera = new THREE.PerspectiveCamera(45, WIDTH/HEIGHT, 0.1, 10000);
+			scene.add(camera);
+			//Kamera weiter in Richtung +z setzen, da sich Szene am Ursprung abspielen soll
+			camera.position.z = 200;
+
+			//Renderer
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize(WIDTH, HEIGHT);
+			document.body.appendChild(renderer.domElement);
+
+			//Beispielobjekt
+			var geometry = new THREE.BoxGeometry(10, 10, 10);
+			var material = new THREE.MeshBasicMaterial({color: 0x6a6a6a, wireframe: true});
+			var bsp = new THREE.Mesh(geometry, material);
+			scene.add(bsp);
+
+			//Schleifenfunktion zum rendern; 60fps
+			var render = function() {
+				requestAnimationFrame(render);
+				renderer.render(scene, camera);
+			};
+
+			render();
+
+		</script>
 	</body>
-	
+
 </html>
