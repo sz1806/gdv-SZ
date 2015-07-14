@@ -14,6 +14,10 @@
 		<script src="js/OrbitControl.js"></script>
 
 		<script>
+			//globale Variabeln
+			// aktuelles Datum in Millisek.
+			var startTime = Date.now();
+
 			//Szene
 			var scene = new THREE.Scene();
 
@@ -23,7 +27,7 @@
 			var camera = new THREE.PerspectiveCamera(45, WIDTH/HEIGHT, 0.1, 10000);
 			scene.add(camera);
 			//Kamera weiter in Richtung +z setzen, da sich Szene am Ursprung abspielen soll
-			camera.position.z = 200;
+			camera.position.z = 100;
 
 			//Renderer
 			var renderer = new THREE.WebGLRenderer();
@@ -42,7 +46,13 @@
 
 				//Box bewegen um x- und y-Achse
 				bsp.rotation.x += 0.01;
-				bsp.rotation.y += 0.01; 
+				bsp.rotation.y += 0.01;
+
+				//schwingende Bewegung mit Hilfe der Zeitdifferenz
+				var timeDelta = Date.now() - startTime;
+				bsp.position.x = 80 * Math.sin(timeDelta * 0.001);
+				//Position Debug
+				console.log(bsp.position.x);
 
 				renderer.render(scene, camera);
 			};
