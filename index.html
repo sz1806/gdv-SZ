@@ -39,6 +39,11 @@
 			//Schleifenfunktion zum rendern; 60fps
 			var render = function() {
 				requestAnimationFrame(render);
+
+				//Box bewegen um x- und y-Achse
+				bsp.rotation.x += 0.01;
+				bsp.rotation.y += 0.01; 
+
 				renderer.render(scene, camera);
 			};
 
