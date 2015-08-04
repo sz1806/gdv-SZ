@@ -11,7 +11,7 @@
 	<body>
 		<script src="js/three.min.js"></script>
 		//Kamerasteuerung per Maus zu Debugzwecken; in offizieller three.js Bibliothek enthalten
-		<script src="js/OrbitControl.js"></script>
+		<script src="js/OrbitControls.js"></script>
 
 		<script>
 			//globale Variabeln
@@ -34,11 +34,34 @@
 			renderer.setSize(WIDTH, HEIGHT);
 			document.body.appendChild(renderer.domElement);
 
-			//Beispielobjekt
+			//Einbindung der Kamerasteuerung
+			var controls = new THREE.OrbitControls(camera, render);
+
+			//Beispielobjekt 1. Meteorit
 			var geometry = new THREE.BoxGeometry(10, 10, 10);
 			var material = new THREE.MeshBasicMaterial({color: 0x6a6a6a, wireframe: true});
 			var bsp = new THREE.Mesh(geometry, material);
 			scene.add(bsp);
+			bsp.position.z = -1000;
+
+			//Sternenhimmel
+			var sphere = new THREE.SphereGeometry( 1, 32, 32 );
+			var starmat = new THREE.MeshBasicMaterial( { color: 0xffffff, specular: 0xffffff, shininess: 50 } );
+
+
+			for (var i = 0; i < 5000; i ++) {
+
+				var star = new THREE.Mesh(sphere, starmat);
+
+				star.position.x = 3000 * (2.0 * Math.random() - 1.0);
+				star.position.y = 3000 * (2.0 * Math.random() - 1.0);
+				star.position.z = 3000 * (2.0 * Math.random() - 1.0);
+
+				star.matrixAutoUpdate = false;
+				star.updateMatrix();
+
+				scene.add(star);
+			}
 
 			//Schleifenfunktion zum rendern; 60fps
 			var render = function() {
@@ -47,6 +70,15 @@
 				//Box bewegen um x- und y-Achse
 				bsp.rotation.x += 0.01;
 				bsp.rotation.y += 0.01;
+				bsp.position.z += 2.5;
+
+
+				//Box verschieben wenn hinter Kamera
+				if (bsp.position.z >= 100) {
+					bsp.position.z = -1000;
+					bsp.position.x = (Math.random() * (45 - (-45)) + (-45));
+					bsp.position.y = (Math.random() * (45 - (-45)) + (-45));
+					}
 
 				//schwingende Bewegung mit Hilfe der Zeitdifferenz
 				var timeDelta = Date.now() - startTime;
