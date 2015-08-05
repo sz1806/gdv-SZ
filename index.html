@@ -38,11 +38,20 @@
 			var controls = new THREE.OrbitControls(camera, render);
 
 			//Beispielobjekt 1. Meteorit
-			var geometry = new THREE.BoxGeometry(10, 10, 10);
-			var material = new THREE.MeshBasicMaterial({color: 0x6a6a6a, wireframe: true});
-			var bsp = new THREE.Mesh(geometry, material);
-			scene.add(bsp);
-			bsp.position.z = -1000;
+			var meteorits  = [];
+
+			for ( i = 0; i < 15; i++) {
+				var geometry = new THREE.BoxGeometry(10, 10, 10);
+				var material = new THREE.MeshBasicMaterial({color: 0x6a6a6a, wireframe: true});
+				var bsp = new THREE.Mesh(geometry, material);
+
+				bsp.position.z = -1000;
+				bsp.position.x = (Math.random() * (45 - (-45)) + (-45));
+				bsp.position.y = (Math.random() * (45 - (-45)) + (-45));
+
+				scene.add(bsp);
+				meteorits.push(bsp);
+			}
 
 			//Sternenhimmel
 			var sphere = new THREE.SphereGeometry( 1, 32, 32 );
@@ -62,32 +71,34 @@
 				scene.add(star);
 
 				//Meteoriten bewegen
-				var meteorit = function () {
-
+				function meteorit() {
+					for (i = 0; i < meteorits.length; i++) {
 					//Meteorit bewegen um x- und y-Achse
-					bsp.rotation.x += 0.01;
-					bsp.rotation.y += 0.01;
-					bsp.position.z += 2.5;
+					meteorits[i].rotation.x += 0.01;
+					meteorits[i].rotation.y += 0.01;
+					meteorits[i].position.z += 2.5;
 
 					//Meteorit verschieben wenn hinter Kamera
-					if (bsp.position.z >= 100) {
-						bsp.position.z = -1000;
-						bsp.position.x = (Math.random() * (45 - (-45)) + (-45));
-						bsp.position.y = (Math.random() * (45 - (-45)) + (-45));
+					if (meteorits[i].position.z >= 100) {
+						meteorits[i].position.z = (Math.random() * (1000 - (-1000)) + (-1000));
+						meteorits[i].position.x = (Math.random() * (45 - (-45)) + (-45));
+						meteorits[i].position.y = (Math.random() * (45 - (-45)) + (-45));
 						}
 
 					//schwingende Bewegung mit Hilfe der Zeitdifferenz
-					var timeDelta = Date.now() - startTime;
-					bsp.position.x = 80 * Math.sin(timeDelta * 0.001);
+					//meteorits[i].position.x += Math.random() * 8 * Math.sin(timeDelta * 0.001);
 
 					//Position Debug
-					console.log(bsp.position.x);
+					console.log(meteorits[i].position.x);
+					}
 				}
 			}
 
 			//Schleifenfunktion zum rendern; 60fps
 			var render = function() {
 				requestAnimationFrame(render);
+
+				timeDelta = Date.now() - startTime;
 
 				meteorit();
 
