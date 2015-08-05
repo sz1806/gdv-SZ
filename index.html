@@ -48,7 +48,6 @@
 			var sphere = new THREE.SphereGeometry( 1, 32, 32 );
 			var starmat = new THREE.MeshBasicMaterial( { color: 0xffffff, specular: 0xffffff, shininess: 50 } );
 
-
 			for (var i = 0; i < 5000; i ++) {
 
 				var star = new THREE.Mesh(sphere, starmat);
@@ -61,30 +60,36 @@
 				star.updateMatrix();
 
 				scene.add(star);
+
+				//Meteoriten bewegen
+				var meteorit = function () {
+
+					//Meteorit bewegen um x- und y-Achse
+					bsp.rotation.x += 0.01;
+					bsp.rotation.y += 0.01;
+					bsp.position.z += 2.5;
+
+					//Meteorit verschieben wenn hinter Kamera
+					if (bsp.position.z >= 100) {
+						bsp.position.z = -1000;
+						bsp.position.x = (Math.random() * (45 - (-45)) + (-45));
+						bsp.position.y = (Math.random() * (45 - (-45)) + (-45));
+						}
+
+					//schwingende Bewegung mit Hilfe der Zeitdifferenz
+					var timeDelta = Date.now() - startTime;
+					bsp.position.x = 80 * Math.sin(timeDelta * 0.001);
+
+					//Position Debug
+					console.log(bsp.position.x);
+				}
 			}
 
 			//Schleifenfunktion zum rendern; 60fps
 			var render = function() {
 				requestAnimationFrame(render);
 
-				//Box bewegen um x- und y-Achse
-				bsp.rotation.x += 0.01;
-				bsp.rotation.y += 0.01;
-				bsp.position.z += 2.5;
-
-
-				//Box verschieben wenn hinter Kamera
-				if (bsp.position.z >= 100) {
-					bsp.position.z = -1000;
-					bsp.position.x = (Math.random() * (45 - (-45)) + (-45));
-					bsp.position.y = (Math.random() * (45 - (-45)) + (-45));
-					}
-
-				//schwingende Bewegung mit Hilfe der Zeitdifferenz
-				var timeDelta = Date.now() - startTime;
-				bsp.position.x = 80 * Math.sin(timeDelta * 0.001);
-				//Position Debug
-				console.log(bsp.position.x);
+				meteorit();
 
 				renderer.render(scene, camera);
 			};
