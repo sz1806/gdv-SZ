@@ -10,7 +10,7 @@
 
 	<body>
 		<script src="js/three.min.js"></script>
-		//Kamerasteuerung per Maus zu Debugzwecken; in offizieller three.js Bibliothek enthalten
+		<!-- Kamerasteuerung per Maus zu Debugzwecken; in offizieller three.js Bibliothek enthalten -->
 		<script src="js/OrbitControls.js"></script>
 
 		<script>
@@ -37,25 +37,26 @@
 			//Einbindung der Kamerasteuerung
 			var controls = new THREE.OrbitControls(camera, render);
 
-			//Beispielobjekt 1. Meteorit
+			//alle Meteoriten
 			var meteorits  = [];
 
-			for ( i = 0; i < 15; i++) {
+			for ( i = 0; i < 20; i++) {
 				var geometry = new THREE.BoxGeometry(10, 10, 10);
 				var material = new THREE.MeshBasicMaterial({color: 0x6a6a6a, wireframe: true});
-				var bsp = new THREE.Mesh(geometry, material);
+				var met = new THREE.Mesh(geometry, material);
 
-				bsp.position.z = -1000;
-				bsp.position.x = (Math.random() * (45 - (-45)) + (-45));
-				bsp.position.y = (Math.random() * (45 - (-45)) + (-45));
+				met.position.z = (Math.random() * (-1000 - (1000)) + (1000));
+				met.position.x = (Math.random() * (85 - (-85)) + (-85));
+				met.position.y = (Math.random() * (85 - (-85)) + (-85));
 
-				scene.add(bsp);
-				meteorits.push(bsp);
+				scene.add(met);
+				meteorits.push(met);
 			}
 
 			//Sternenhimmel
 			var sphere = new THREE.SphereGeometry( 1, 32, 32 );
 			var starmat = new THREE.MeshBasicMaterial( { color: 0xffffff, specular: 0xffffff, shininess: 50 } );
+			var stars = [];
 
 			for (var i = 0; i < 5000; i ++) {
 
@@ -63,36 +64,35 @@
 
 				star.position.x = 3000 * (2.0 * Math.random() - 1.0);
 				star.position.y = 3000 * (2.0 * Math.random() - 1.0);
-				star.position.z = 3000 * (2.0 * Math.random() - 1.0);
-
-				star.matrixAutoUpdate = false;
-				star.updateMatrix();
+				star.position.z = (Math.random() * (100 - (-3000)) + (-3000));
 
 				scene.add(star);
+				stars.push(star);
+			}
 
 				//Meteoriten bewegen
-				function meteorit() {
-					for (i = 0; i < meteorits.length; i++) {
-					//Meteorit bewegen um x- und y-Achse
-					meteorits[i].rotation.x += 0.01;
-					meteorits[i].rotation.y += 0.01;
-					meteorits[i].position.z += 2.5;
+			function meteorit() {
+				for (i = 0; i < meteorits.length; i++) {
+				//Meteorit bewegen um x- und y-Achse; z-Position
+				meteorits[i].rotation.x += 0.01;
+				meteorits[i].rotation.y += 0.01;
+				meteorits[i].position.z += 2.5;
 
-					//Meteorit verschieben wenn hinter Kamera
-					if (meteorits[i].position.z >= 100) {
-						meteorits[i].position.z = (Math.random() * (1000 - (-1000)) + (-1000));
-						meteorits[i].position.x = (Math.random() * (45 - (-45)) + (-45));
-						meteorits[i].position.y = (Math.random() * (45 - (-45)) + (-45));
-						}
+				//Meteoriten verschieben wenn hinter Kamera
+				if (meteorits[i].position.z >= 100) {
+					meteorits[i].position.z = (Math.random() * (200 - (-200)) + (-200)) -1000;
+					meteorits[i].position.x = (Math.random() * (85 - (-85)) + (-85));
+					meteorits[i].position.y = (Math.random() * (85 - (-85)) + (-85));
+					}
 
 					//schwingende Bewegung mit Hilfe der Zeitdifferenz
 					//meteorits[i].position.x += Math.random() * 8 * Math.sin(timeDelta * 0.001);
 
 					//Position Debug
-					console.log(meteorits[i].position.x);
+					//console.log(meteorits[i].position.x);
 					}
 				}
-			}
+
 
 			//Schleifenfunktion zum rendern; 60fps
 			var render = function() {
@@ -101,6 +101,20 @@
 				timeDelta = Date.now() - startTime;
 
 				meteorit();
+
+				//Sternbewegung; Funktion gleich zu Meteoriten
+				for (i = 0; i < stars.length; i++) {
+					//Sterne bewegen
+					stars[i].position.z += 0.5;
+
+					//Sterne verschieben wenn hinter Kamera
+					if (stars[i].position.z >= 100) {
+						stars[i].position.x = 3000 * (2.0 * Math.random() - 1.0);
+						stars[i].position.y = 3000 * (2.0 * Math.random() - 1.0);
+						stars[i].position.z = (Math.random() * (100 - (-3000)) + (-3000));
+					}
+
+				}
 
 				renderer.render(scene, camera);
 			};
