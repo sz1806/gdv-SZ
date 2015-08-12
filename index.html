@@ -104,6 +104,24 @@
 					}
 				}
 
+				//Steuerung des Schiffs
+				function shipcontrols(event) {
+					switch(event.keyCode) {
+						//Pfeiltaste oben
+						case 38: ship.position.y += 5;
+						break;
+						//Pfeiltaste unten
+						case 40: ship.position.y -= 5;
+						break;
+						//Pfeiltaste links
+						case 37: ship.position.x -= 5;
+						break;
+						//Pfeiltaste rechts
+						case 39: ship.position.x += 5;
+						break;
+					}
+				}
+
 
 			//Schleifenfunktion zum rendern; 60fps
 			var render = function() {
@@ -112,6 +130,10 @@
 				timeDelta = Date.now() - startTime;
 
 				meteorit();
+
+				//Eventlistener für die Tastatureingaben bei 'keydown'-Events. Diese werden
+				//an die Schiffssteuerung weitergegeben.
+				window.addEventListener('keydown', shipcontrols);
 
 				//Sternbewegung; Funktion gleich zu Meteoriten
 				for (i = 0; i < stars.length; i++) {
