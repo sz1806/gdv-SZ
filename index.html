@@ -37,6 +37,17 @@
 			//Einbindung der Kamerasteuerung
 			var controls = new THREE.OrbitControls(camera, render);
 
+			//Raumschiff
+			var shipgeo = new THREE.CylinderGeometry(0, 10, 20, 4, 1, true);
+			var shipmat = new THREE.MeshBasicMaterial({color: 0x00ff00, wireframe: true});
+			var ship = new THREE.Mesh(shipgeo, shipmat);
+
+			ship.position.y = -20;
+			ship.position.z = 0;
+			ship.rotation.x = -0.5*Math.PI;
+
+			scene.add(ship);
+
 			//alle Meteoriten
 			var meteorits  = [];
 
@@ -111,7 +122,7 @@
 					if (stars[i].position.z >= 100) {
 						stars[i].position.x = 3000 * (2.0 * Math.random() - 1.0);
 						stars[i].position.y = 3000 * (2.0 * Math.random() - 1.0);
-						stars[i].position.z = (Math.random() * (100 - (-3000)) + (-3000));
+						stars[i].position.z = -3000;//(Math.random() * (100 - (-3000)) + (-3000));
 					}
 
 				}
