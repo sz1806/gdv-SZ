@@ -9,3 +9,7 @@ body {
 	margin: 0;
 	background-color: #000;
 }
+
+#score {
+	color: #fff;
+}

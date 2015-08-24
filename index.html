@@ -9,6 +9,9 @@
 	</head>
 
 	<body>
+
+		<div id="score">0</div>
+
 		<script src="js/three.min.js"></script>
 		<!-- Kamerasteuerung per Maus zu Debugzwecken; in offizieller three.js Bibliothek enthalten -->
 		<script src="js/OrbitControls.js"></script>
@@ -17,6 +20,9 @@
 			//globale Variabeln
 			// aktuelles Datum in Millisek.
 			var startTime = Date.now();
+
+			//Punkte
+			var score = 0;
 
 			//Szene
 			var scene = new THREE.Scene();
@@ -122,7 +128,6 @@
 					}
 				}
 
-
 			//Schleifenfunktion zum rendern; 60fps
 			var render = function() {
 				requestAnimationFrame(render);
@@ -148,6 +153,27 @@
 					}
 
 				}
+
+				//Kollision
+	      var originPoint = ship.position.clone();
+
+	    	for (var vertexIndex = 0; vertexIndex < ship.geometry.vertices.length; vertexIndex++) {
+	      	var localVertex = ship.geometry.vertices[vertexIndex].clone();
+	      	var globalVertex = localVertex.applyMatrix4(ship.matrix);
+	      	var directionVector = globalVertex.sub(ship.position);
+
+	        var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
+	        var collisionResults = ray.intersectObjects(meteorits);
+	        if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
+	        	score = 0;
+	    			console.log("HIT");
+	        }
+				}
+
+	        score = timeDelta * 0.01;
+	        if (score % 10 == 0){
+	        	document.getElementById('score').innerHTML = score;
+	        }
 
 				renderer.render(scene, camera);
 			};
