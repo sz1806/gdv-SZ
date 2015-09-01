@@ -57,7 +57,7 @@
 			//alle Meteoriten
 			var meteorits  = [];
 
-			for ( i = 0; i < 20; i++) {
+			for ( i = 0; i < 40; i++) {
 				var geometry = new THREE.BoxGeometry(10, 10, 10);
 				var material = new THREE.MeshBasicMaterial({color: 0x6a6a6a, wireframe: true});
 				var met = new THREE.Mesh(geometry, material);
@@ -98,8 +98,8 @@
 				//Meteoriten verschieben wenn hinter Kamera
 				if (meteorits[i].position.z >= 100) {
 					meteorits[i].position.z = (Math.random() * (200 - (-200)) + (-200)) -1000;
-					meteorits[i].position.x = (Math.random() * (85 - (-85)) + (-85));
-					meteorits[i].position.y = (Math.random() * (85 - (-85)) + (-85));
+					meteorits[i].position.x = (Math.random() * (100 - (-100)) + (-100));
+					meteorits[i].position.y = (Math.random() * (100 - (-100)) + (-100));
 					}
 
 					//schwingende Bewegung mit Hilfe der Zeitdifferenz
@@ -143,7 +143,7 @@
 					}
 				}
 
-				//Kollision Schiff Meteorit
+				//Kollision Schiff <-> Meteorit
 				function collision() {
 
 		      var originPoint = ship.position.clone();
@@ -164,25 +164,30 @@
 					}
 				}
 
+				//Punktezähler
+				function scores() {
+					score += 0.25;
+
+					if (score % 10 == 0){
+		        document.getElementById('score').innerHTML = score;
+		      }
+				}
+
 			//Schleifenfunktion zum rendern; 60fps
 			var render = function() {
 				requestAnimationFrame(render);
 
-				timeDelta = Date.now() - startTime;
+
+				//timeDelta = Date.now() - startTime;
 
 				meteorit();
 				starMov();
 				collision();
+				scores();
 
 				//Eventlistener für die Tastatureingaben bei 'keydown'-Events. Diese werden
 				//an die Schiffssteuerung weitergegeben.
 				window.addEventListener('keydown', shipcontrols);
-
-
-	        score += 0.25;
-	        if (score % 10 == 0){
-	        	document.getElementById('score').innerHTML = score;
-	        }
 
 				renderer.render(scene, camera);
 			};
