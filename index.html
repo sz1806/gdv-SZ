@@ -110,6 +110,21 @@
 					}
 				}
 
+				//Sternbewegung; Funktion gleich zu Meteoriten
+				function starMov() {
+					for (i = 0; i < stars.length; i++) {
+						//Sterne bewegen
+						stars[i].position.z += 1.0;
+
+						//Sterne verschieben wenn hinter Kamera
+						if (stars[i].position.z >= 100) {
+							stars[i].position.x = 3000 * (2.0 * Math.random() - 1.0);
+							stars[i].position.y = 3000 * (2.0 * Math.random() - 1.0);
+							stars[i].position.z = -3000;//(Math.random() * (100 - (-3000)) + (-3000));
+						}
+					}
+				}
+
 				//Steuerung des Schiffs
 				function shipcontrols(event) {
 					switch(event.keyCode) {
@@ -128,6 +143,27 @@
 					}
 				}
 
+				//Kollision Schiff Meteorit
+				function collision() {
+
+		      var originPoint = ship.position.clone();
+
+		    	for (var vertexIndex = 0; vertexIndex < ship.geometry.vertices.length; vertexIndex++) {
+		      	var localVertex = ship.geometry.vertices[vertexIndex].clone();
+		      	var globalVertex = localVertex.applyMatrix4(ship.matrix);
+		      	var directionVector = globalVertex.sub(ship.position);
+
+		        var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
+		        var collisionResults = ray.intersectObjects(meteorits);
+		        if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
+		        	// Punkte zurück setzen
+							score = 0;
+		    			//Konsolen Debug
+							console.log("HIT");
+		        }
+					}
+				}
+
 			//Schleifenfunktion zum rendern; 60fps
 			var render = function() {
 				requestAnimationFrame(render);
@@ -135,40 +171,13 @@
 				timeDelta = Date.now() - startTime;
 
 				meteorit();
+				starMov();
+				collision();
 
 				//Eventlistener für die Tastatureingaben bei 'keydown'-Events. Diese werden
 				//an die Schiffssteuerung weitergegeben.
 				window.addEventListener('keydown', shipcontrols);
 
-				//Sternbewegung; Funktion gleich zu Meteoriten
-				for (i = 0; i < stars.length; i++) {
-					//Sterne bewegen
-					stars[i].position.z += 0.5;
-
-					//Sterne verschieben wenn hinter Kamera
-					if (stars[i].position.z >= 100) {
-						stars[i].position.x = 3000 * (2.0 * Math.random() - 1.0);
-						stars[i].position.y = 3000 * (2.0 * Math.random() - 1.0);
-						stars[i].position.z = -3000;//(Math.random() * (100 - (-3000)) + (-3000));
-					}
-
-				}
-
-				//Kollision
-	      var originPoint = ship.position.clone();
-
-	    	for (var vertexIndex = 0; vertexIndex < ship.geometry.vertices.length; vertexIndex++) {
-	      	var localVertex = ship.geometry.vertices[vertexIndex].clone();
-	      	var globalVertex = localVertex.applyMatrix4(ship.matrix);
-	      	var directionVector = globalVertex.sub(ship.position);
-
-	        var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-	        var collisionResults = ray.intersectObjects(meteorits);
-	        if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
-	        	score = 0;
-	    			console.log("HIT");
-	        }
-				}
 
 	        score += 0.25;
 	        if (score % 10 == 0){
