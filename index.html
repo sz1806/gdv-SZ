@@ -87,13 +87,37 @@
 				stars.push(star);
 			}
 
+
+			var bullets = [];
+
+			function shoot(){
+				//Projektile
+				var bulletGeo = new THREE.SphereGeometry(1, 32, 32);
+				var bulletMat = new THREE.MeshBasicMaterial({color: 0xff0000});
+				var bullet = new THREE.Mesh(bulletGeo, bulletMat);
+
+				//Aus dem Bug schießen
+				bullet.position.x = ship.position.x;
+				bullet.position.y = ship.position.y;
+				bullet.position.z = ship.position.z - 11;
+				scene.add(bullet);
+				bullets.push(bullet);
+			}
+
+			function bulletMov(){
+				//Projektile nach vorne bewegen
+				for (i = 0; i < bullets.length; i++) {
+					bullets[i].position.z -= 1.5;
+				}
+			}
+
 				//Meteoriten bewegen
 			function meteorit() {
 				for (i = 0; i < meteorits.length; i++) {
-				//Meteorit bewegen um x- und y-Achse; z-Position
-				meteorits[i].rotation.x += 0.01;
-				meteorits[i].rotation.y += 0.01;
-				meteorits[i].position.z += 2.5;
+					//Meteorit bewegen um x- und y-Achse; z-Position
+					meteorits[i].rotation.x += 0.01;
+					meteorits[i].rotation.y += 0.01;
+					meteorits[i].position.z += 2.5;
 
 				//Meteoriten verschieben wenn hinter Kamera
 				if (meteorits[i].position.z >= 100) {
@@ -140,6 +164,8 @@
 						//Pfeiltaste rechts
 						case 39: ship.position.x += 5;
 						break;
+						case 32: shoot();
+						break;
 					}
 				}
 
@@ -164,6 +190,8 @@
 					}
 				}
 
+				//
+
 				//Punktezähler
 				function scores() {
 					score += 0.25;
@@ -184,6 +212,10 @@
 				starMov();
 				collision();
 				scores();
+				bulletMov();
+
+
+
 
 				//Eventlistener für die Tastatureingaben bei 'keydown'-Events. Diese werden
 				//an die Schiffssteuerung weitergegeben.
