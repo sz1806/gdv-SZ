@@ -91,7 +91,7 @@
 			var bullets = [];
 
 			function shoot(){
-				//Projektile
+				//Projektile erstellen
 				var bulletGeo = new THREE.SphereGeometry(1, 32, 32);
 				var bulletMat = new THREE.MeshBasicMaterial({color: 0xff0000});
 				var bullet = new THREE.Mesh(bulletGeo, bulletMat);
@@ -108,6 +108,12 @@
 				//Projektile nach vorne bewegen
 				for (i = 0; i < bullets.length; i++) {
 					bullets[i].position.z -= 1.5;
+
+					if (bullets[i].position.z < -150) {
+						scene.remove(bullets[i]);
+						//console.log(bullets.toString());
+					}
+
 				}
 			}
 
@@ -120,10 +126,10 @@
 					meteorits[i].position.z += 2.5;
 
 				//Meteoriten verschieben wenn hinter Kamera
-				if (meteorits[i].position.z >= 100) {
-					meteorits[i].position.z = (Math.random() * (200 - (-200)) + (-200)) -1000;
-					meteorits[i].position.x = (Math.random() * (100 - (-100)) + (-100));
-					meteorits[i].position.y = (Math.random() * (100 - (-100)) + (-100));
+					if (meteorits[i].position.z >= 100) {
+						meteorits[i].position.z = (Math.random() * (200 - (-200)) + (-200)) -1000;
+						meteorits[i].position.x = (Math.random() * (100 - (-100)) + (-100));
+						meteorits[i].position.y = (Math.random() * (100 - (-100)) + (-100));
 					}
 
 					//schwingende Bewegung mit Hilfe der Zeitdifferenz
@@ -170,14 +176,14 @@
 				}
 
 				//Kollision Schiff <-> Meteorit
-				function collision() {
+				function collision(obj) {
 
-		      var originPoint = ship.position.clone();
+		      var originPoint = obj.position.clone();
 
-		    	for (var vertexIndex = 0; vertexIndex < ship.geometry.vertices.length; vertexIndex++) {
-		      	var localVertex = ship.geometry.vertices[vertexIndex].clone();
-		      	var globalVertex = localVertex.applyMatrix4(ship.matrix);
-		      	var directionVector = globalVertex.sub(ship.position);
+		    	for (var vertexIndex = 0; vertexIndex < obj.geometry.vertices.length; vertexIndex++) {
+		      	var localVertex = obj.geometry.vertices[vertexIndex].clone();
+		      	var globalVertex = localVertex.applyMatrix4(obj.matrix);
+		      	var directionVector = globalVertex.sub(obj.position);
 
 		        var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
 		        var collisionResults = ray.intersectObjects(meteorits);
@@ -185,7 +191,7 @@
 		        	// Punkte zurück setzen
 							score = 0;
 		    			//Konsolen Debug
-							console.log("HIT");
+							//console.log("HIT");
 		        }
 					}
 				}
@@ -210,10 +216,12 @@
 
 				meteorit();
 				starMov();
-				collision();
+				collision(ship);
+				//collision();
 				scores();
 				bulletMov();
-
+				for(i = 0; i < bullets.length; i++) {collision(bullets[i])};
+				
 
 
 
