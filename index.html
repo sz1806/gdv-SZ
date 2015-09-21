@@ -28,8 +28,8 @@
 			var scene = new THREE.Scene();
 
 			//Kamera
-			var WIDTH = window.innerWidth;
-			var HEIGHT = window.innerHeight;
+			var WIDTH = window.innerWidth/1.5;
+			var HEIGHT = window.innerHeight/1.5;
 			var camera = new THREE.PerspectiveCamera(45, WIDTH/HEIGHT, 0.1, 10000);
 			scene.add(camera);
 			//Kamera weiter in Richtung +z setzen, da sich Szene am Ursprung abspielen soll
@@ -100,8 +100,10 @@
 				bullet.position.x = ship.position.x;
 				bullet.position.y = ship.position.y;
 				bullet.position.z = ship.position.z - 11;
-				scene.add(bullet);
-				bullets.push(bullet);
+				if (bullets.length <= 5) {
+					scene.add(bullet);
+					bullets.push(bullet);
+				}
 			}
 
 			function bulletMov(){
@@ -111,6 +113,7 @@
 
 					if (bullets[i].position.z < -150) {
 						scene.remove(bullets[i]);
+						bullets.shift();
 						//console.log(bullets.toString());
 					}
 
@@ -175,8 +178,8 @@
 					}
 				}
 
-				//Kollision Schiff <-> Meteorit
-				function collision(obj) {
+				//Kollision allgemein (für Meteoriten und Projektile)
+				function collision(obj, funct) {
 
 		      var originPoint = obj.position.clone();
 
@@ -188,15 +191,10 @@
 		        var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
 		        var collisionResults = ray.intersectObjects(meteorits);
 		        if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
-		        	// Punkte zurück setzen
-							score = 0;
-		    			//Konsolen Debug
-							//console.log("HIT");
+		        	score = 0;
 		        }
 					}
 				}
-
-				//
 
 				//Punktezähler
 				function scores() {
@@ -207,23 +205,23 @@
 		      }
 				}
 
+				//Schiff trifft Meteorit
+				function metHit() {
+				//	score = 0;
+				}
+
 			//Schleifenfunktion zum rendern; 60fps
 			var render = function() {
 				requestAnimationFrame(render);
-
 
 				//timeDelta = Date.now() - startTime;
 
 				meteorit();
 				starMov();
-				collision(ship);
-				//collision();
+				collision(ship, metHit);
 				scores();
 				bulletMov();
-				for(i = 0; i < bullets.length; i++) {collision(bullets[i])};
-				
-
-
+				for(i = 0; i < bullets.length; i++) {collision(bullets[i], metHit)};
 
 				//Eventlistener für die Tastatureingaben bei 'keydown'-Events. Diese werden
 				//an die Schiffssteuerung weitergegeben.
