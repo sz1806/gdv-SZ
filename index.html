@@ -100,7 +100,7 @@
 				bullet.position.x = ship.position.x;
 				bullet.position.y = ship.position.y;
 				bullet.position.z = ship.position.z - 11;
-				if (bullets.length <= 5) {
+				if (bullets.length <= 2) {
 					scene.add(bullet);
 					bullets.push(bullet);
 				}
@@ -133,6 +133,10 @@
 						meteorits[i].position.z = (Math.random() * (200 - (-200)) + (-200)) -1000;
 						meteorits[i].position.x = (Math.random() * (100 - (-100)) + (-100));
 						meteorits[i].position.y = (Math.random() * (100 - (-100)) + (-100));
+						meteorits[i].visible = true;
+					}
+					else if (score >= 100) {
+						meteorits[i].position.z += 2.5;
 					}
 
 					//schwingende Bewegung mit Hilfe der Zeitdifferenz
@@ -179,7 +183,7 @@
 				}
 
 				//Kollision allgemein (für Meteoriten und Projektile)
-				function collision(obj, funct) {
+				function collision(obj) {
 
 		      var originPoint = obj.position.clone();
 
@@ -191,7 +195,8 @@
 		        var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
 		        var collisionResults = ray.intersectObjects(meteorits);
 		        if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
-		        	score = 0;
+		        	if (obj == ship && collisionResults[0].object.visible == true) {shipHit()}
+							else {bulletHit(collisionResults[0].object)}
 		        }
 					}
 				}
@@ -206,8 +211,13 @@
 				}
 
 				//Schiff trifft Meteorit
-				function metHit() {
-				//	score = 0;
+				function shipHit() {
+					score = 0;
+				}
+
+				//Projektil trifft Meteorit
+				function bulletHit(obj) {
+				 	obj.visible = false;
 				}
 
 			//Schleifenfunktion zum rendern; 60fps
@@ -218,10 +228,10 @@
 
 				meteorit();
 				starMov();
-				collision(ship, metHit);
+				collision(ship);
 				scores();
 				bulletMov();
-				for(i = 0; i < bullets.length; i++) {collision(bullets[i], metHit)};
+				for(i = 0; i < bullets.length; i++) {collision(bullets[i])};
 
 				//Eventlistener für die Tastatureingaben bei 'keydown'-Events. Diese werden
 				//an die Schiffssteuerung weitergegeben.
