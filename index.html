@@ -13,7 +13,7 @@
 		<div id="score" class="screen">0</div>
 		<div id="title" class="screen">Spacetacular</div>
 		<div id="highscore" class="screen">highscore 0</div>
-		<div id="start">LET'S GO</div>
+		<div id="start" onclick="start()">LET'S GO</div>
 
 		<script src="js/three.min.js"></script>
 		<!-- Kamerasteuerung per Maus zu Debugzwecken; in offizieller three.js Bibliothek enthalten -->
@@ -24,8 +24,13 @@
 			// aktuelles Datum in Millisek.
 			var startTime = Date.now();
 
+			var go = false;
+
 			//Punkte
 			var score = 0;
+
+			//Highscore
+			var highscore = 0;
 
 			//Szene
 			var scene = new THREE.Scene();
@@ -220,12 +225,37 @@
 				//Schiff trifft Meteorit
 				function shipHit() {
 					score = 0;
+					gameOver();
 				}
 
 				//Projektil trifft Meteorit
 				function bulletHit(obj) {
 				 	obj.visible = false;
 					score += 0.5;
+				}
+
+				function start() {
+					go = true;
+					document.getElementById('score').innerHTML = 0;
+					document.getElementById('title').style.display='none';
+					document.getElementById('highscore').style.display='none';
+					document.getElementById('start').style.display='none';
+
+					//highscore = localStorage.getItem("highscore");
+					//if (highscore == 0 || highscore == undefined || highscore == null) {highscore = 0};
+					document.getElementById('highscore').innerHTML = "highscore " + highscore;
+				}
+
+				function gameOver() {
+					go = false;
+					document.getElementById('title').style.display='block';
+					document.getElementById('highscore').style.display='block';
+					document.getElementById('start').style.display='block';
+
+					if (highscore < score) {
+						highscore = score;
+						//localStorage.setItem("highscore", highscore);
+					}
 				}
 
 			//Schleifenfunktion zum rendern; 60fps
@@ -236,10 +266,16 @@
 
 				meteorit();
 				starMov();
-				collision(ship);
-				scores();
+				//collision(ship);
+				//scores();
 				bulletMov();
-				for(i = 0; i < bullets.length; i++) {collision(bullets[i])};
+				//for(i = 0; i < bullets.length; i++) {collision(bullets[i])};
+
+				if (go) {
+					collision(ship);
+					scores();
+					for(i = 0; i < bullets.length; i++) {collision(bullets[i])};
+				}
 
 				//Eventlistener für die Tastatureingaben bei 'keydown'-Events. Diese werden
 				//an die Schiffssteuerung weitergegeben.
