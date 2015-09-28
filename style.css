@@ -53,10 +53,20 @@ font-size: 3.5rem;
 	z-index: 9999;
 	width: 6.2em;
 	text-align: center;
-	top:40%;
+	top:70%;
 	font-size: 2rem;
 	left: 42%;
 	background-color: rgba(99, 99, 99, 0.7);
 	cursor: pointer;
+}
 
+#gameOver {
+	color: red;
+	width: 100%;
+	text-align: center;
+	font-size: 4rem;
+	top: 40%;
+	display: none;
+	z-index: 9999;
+	position: absolute;
 }
