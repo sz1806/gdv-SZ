@@ -10,12 +10,53 @@ body {
 	background-color: #000;
 }
 
-#score {
-	color: #fff;
-}
-
 canvas {
 	padding 0;
 	margin: auto;
 	display: block;
+	position: relative;
+}
+
+.screen {
+	color: #fff;
+	position: absolute;
+	z-index: 999;
+}
+
+#score {
+	top: 0px;
+	right: 20px;
+	position: absolute;
+	z-index: 9999;
+	font-size: 1.5rem;
+}
+
+#title {
+top: 20%;
+text-align: center;
+width: 100%;
+display: block;
+font-size: 3.5rem;
+}
+
+#highscore {
+	width: 100%;
+	text-align: center;
+	font-size: 1.5rem;
+}
+
+#start {
+	color: #fff;
+	border-radius: 0.2rem;
+	border: 0.2rem solid #fff;
+	position: absolute;
+	z-index: 9999;
+	width: 6.2em;
+	text-align: center;
+	top:40%;
+	font-size: 2rem;
+	left: 42%;
+	background-color: rgba(99, 99, 99, 0.7);
+	cursor: pointer;
+
 }

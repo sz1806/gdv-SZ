@@ -10,7 +10,10 @@
 
 	<body>
 
-		<div id="score">0</div>
+		<div id="score" class="screen">0</div>
+		<div id="title" class="screen">Spacetacular</div>
+		<div id="highscore" class="screen">highscore 0</div>
+		<div id="start">LET'S GO</div>
 
 		<script src="js/three.min.js"></script>
 		<!-- Kamerasteuerung per Maus zu Debugzwecken; in offizieller three.js Bibliothek enthalten -->
@@ -28,8 +31,8 @@
 			var scene = new THREE.Scene();
 
 			//Kamera
-			var WIDTH = window.innerWidth/1.5;
-			var HEIGHT = window.innerHeight/1.5;
+			var WIDTH = window.innerWidth;
+			var HEIGHT = window.innerHeight;
 			var camera = new THREE.PerspectiveCamera(45, WIDTH/HEIGHT, 0.1, 10000);
 			scene.add(camera);
 			//Kamera weiter in Richtung +z setzen, da sich Szene am Ursprung abspielen soll
@@ -57,9 +60,9 @@
 			//alle Meteoriten
 			var meteorits  = [];
 
-			for ( i = 0; i < 40; i++) {
+			for ( i = 0; i < 20; i++) {
 				var geometry = new THREE.BoxGeometry(10, 10, 10);
-				var material = new THREE.MeshBasicMaterial({color: 0x6a6a6a, wireframe: true});
+				var material = new THREE.MeshBasicMaterial({color: 0x6a6a6a, wireframe: false});
 				var met = new THREE.Mesh(geometry, material);
 
 				met.position.z = (Math.random() * (-1000 - (1000)) + (1000));
@@ -71,7 +74,7 @@
 			}
 
 			//Sternenhimmel
-			var sphere = new THREE.SphereGeometry( 1, 32, 32 );
+			var sphere = new THREE.SphereGeometry( 1, 8, 8 );
 			var starmat = new THREE.MeshBasicMaterial( { color: 0xffffff, specular: 0xffffff, shininess: 50 } );
 			var stars = [];
 
@@ -124,8 +127,8 @@
 			function meteorit() {
 				for (i = 0; i < meteorits.length; i++) {
 					//Meteorit bewegen um x- und y-Achse; z-Position
-					meteorits[i].rotation.x += 0.01;
-					meteorits[i].rotation.y += 0.01;
+					//meteorits[i].rotation.x += 0.01;
+					//meteorits[i].rotation.y += 0.01;
 					meteorits[i].position.z += 2.5;
 
 				//Meteoriten verschieben wenn hinter Kamera
@@ -135,8 +138,12 @@
 						meteorits[i].position.y = (Math.random() * (100 - (-100)) + (-100));
 						meteorits[i].visible = true;
 					}
-					else if (score >= 100) {
+					else if (score >= 2500) {
 						meteorits[i].position.z += 2.5;
+					}
+
+					else if (score >= 10000) {
+						meteorits[i].position.z += 5;
 					}
 
 					//schwingende Bewegung mit Hilfe der Zeitdifferenz
@@ -218,6 +225,7 @@
 				//Projektil trifft Meteorit
 				function bulletHit(obj) {
 				 	obj.visible = false;
+					score += 0.5;
 				}
 
 			//Schleifenfunktion zum rendern; 60fps
@@ -244,5 +252,4 @@
 
 		</script>
 	</body>
-
 </html>
