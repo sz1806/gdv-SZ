@@ -145,6 +145,7 @@
 						meteorits[i].position.y = (Math.random() * (100 - (-100)) + (-100));
 						meteorits[i].visible = true;
 					}
+					//Geschwindigkeit erhöhen bei gößerer Punktzahl
 					else if (score >= 2500) {
 						meteorits[i].position.z += 2.5;
 					}
@@ -153,12 +154,12 @@
 						meteorits[i].position.z += 5;
 					}
 
-					else if (!go) {
+					if (!go) {
 						//random Color-Picker von http://www.paulirish.com/2009/random-hex-color-code-snippets/
 						meteorits[i].material.color.setHex('0x'+(Math.floor(Math.random()*16777215).toString(16)));
 					}
 
-					else if (go) {
+					if (go) {
 						meteorits[i].material.color.setHex(0x6a6a6a);
 					}
 
@@ -200,6 +201,7 @@
 						//Pfeiltaste rechts
 						case 39: ship.position.x += 5;
 						break;
+						// Leertaste
 						case 32: shoot();
 						break;
 					}
