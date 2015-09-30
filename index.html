@@ -69,7 +69,7 @@
 			var meteorits  = [];
 
 			for ( i = 0; i < 20; i++) {
-				var geometry = new THREE.BoxGeometry(10, 10, 10);
+				var geometry = new THREE.SphereGeometry(8, 4, 4);
 				var material = new THREE.MeshBasicMaterial({color: 0x6a6a6a, wireframe: false});
 				var met = new THREE.Mesh(geometry, material);
 
