@@ -14,6 +14,7 @@
 		<div id="title" class="screen">Spacetacular</div>
 		<div id="highscore" class="screen">highscore: 0</div>
 		<div id="gameOver"> GAME OVER</div>
+		<div id="instruction" class="screen"> <img src="images/tastaturbelegung.png" height="300rem" width="840rem"> </div>
 		<div id="start" onclick="start()">LET'S GO</div>
 
 		<script src="js/three.min.js"></script>
@@ -259,6 +260,7 @@
 					document.getElementById('highscore').style.display='none';
 					document.getElementById('start').style.display='none';
 					document.getElementById('gameOver').style.display = 'none';
+					document.getElementById('instruction').style.display = 'none';
 				}
 
 				function gameOver() {
@@ -267,6 +269,7 @@
 					document.getElementById('highscore').style.display='block';
 					document.getElementById('start').style.display='block';
 					document.getElementById('gameOver').style.display = 'block';
+					
 
 				}
 
