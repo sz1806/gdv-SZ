@@ -25,11 +25,11 @@ canvas {
 }
 
 #score {
-	top: 0px;
-	right: 20px;
 	position: absolute;
 	z-index: 9999;
-	font-size: 1.5rem;
+	font-size: 2rem;
+	top:5%;
+	right: 5%;
 }
 
 #title {
@@ -41,39 +41,52 @@ font-size: 3.5rem;
 text-transform: uppercase;
 }
 
+#titleimage {
+	left: 32%;
+	top: 7%;
+}
+
 #highscore {
 	width: 100%;
 	text-align: center;
 	font-size: 1.5rem;
 	text-transform: uppercase;
+	top:5%;
 }
 
 #instruction {
-	left: 20%;
-	top: 31%;
+	left: 36%;
+	top: 40%;
+}
+
+#startbutton {
+	left: 42%;
+	top: 67%;
+	cursor: pointer;
 }
 
 #start {
 	color: #fff;
 	border-radius: 0.2rem;
-	border: 0.2rem solid #b32424;
+	border: 0.2rem solid #61a02d;
 	position: absolute;
 	z-index: 9999;
 	width: 8.2em;
 	text-align: center;
 	top:70%;
 	font-size: 3rem;
-	left: 36%;
-	background-color: rgba(179, 36, 36, 0.7);
+	left: 40%;
+	background-color: rgba(97, 160, 45, 0.7);
 	cursor: pointer;
 }
 
+
 #gameOver {
-	color: red;
+	color: #b71e1b;
 	width: 100%;
 	text-align: center;
-	font-size: 6rem;
-	top: 40%;
+	font-size: 7rem;
+	top: 47%;
 	display: none;
 	z-index: 9999;
 	position: absolute;

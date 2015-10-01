@@ -11,11 +11,13 @@
 	<body>
 
 		<div id="score" class="screen">0</div>
-		<div id="title" class="screen">Spacetacular</div>
+		<!--<div id="title" class="screen">Spacetacular</div>-->
+		<div id="titleimage" class="screen"> <img src="images/title_image.png" height="342rem" width="700rem"> </div>
 		<div id="highscore" class="screen">highscore: 0</div>
 		<div id="gameOver"> GAME OVER</div>
-		<div id="instruction" class="screen"> <img src="images/tastaturbelegung.png" height="300rem" width="840rem"> </div>
-		<div id="start" onclick="start()">LET'S GO</div>
+		<div id="instruction" class="screen"> <img src="images/tastaturbelegung.png" height="200rem" width="560rem"> </div>
+		<div id="startbutton" class="screen" onclick="start()"> <img src="images/startbutton.gif" height="120rem" width="300rem"> </div>
+		<!--<div id="start" onclick="start()">LET'S GO</div>-->
 
 		<script src="js/three.min.js"></script>
 		<!-- Kamerasteuerung per Maus zu Debugzwecken; in offizieller three.js Bibliothek enthalten -->
@@ -256,19 +258,23 @@
 					go = true;
 					score = 0;
 					document.getElementById('score').innerHTML = 0;
-					document.getElementById('title').style.display='none';
+					//document.getElementById('title').style.display='none';
 					document.getElementById('highscore').style.display='none';
-					document.getElementById('start').style.display='none';
+					//document.getElementById('start').style.display='none';
 					document.getElementById('gameOver').style.display = 'none';
 					document.getElementById('instruction').style.display = 'none';
+					document.getElementById('titleimage').style.display = 'none';
+					document.getElementById('startbutton').style.display = 'none';
 				}
 
 				function gameOver() {
 					go = false;
-					document.getElementById('title').style.display='block';
+					//document.getElementById('title').style.display='block';
 					document.getElementById('highscore').style.display='block';
-					document.getElementById('start').style.display='block';
+					//document.getElementById('start').style.display='block';
 					document.getElementById('gameOver').style.display = 'block';
+					document.getElementById('titleimage').style.display = 'block';
+					document.getElementById('startbutton').style.display = 'block';
 
 				}
 
