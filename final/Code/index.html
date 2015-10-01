@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="de">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="author" content="Stefanie Zahn">
+		<title> Spacetacular - a three.js game </title>
+		<link href="style.css" rel="stylesheet" type="text/css">
+	</head>
+
+	<body>
+
+		<div id="score" class="screen">0</div>
+		<!--<div id="title" class="screen">Spacetacular</div>-->
+		<div id="titleimage" class="screen"> <img src="images/title_image.png" height="342rem" width="700rem"> </div>
+		<div id="highscore" class="screen">highscore: 0</div>
+		<div id="gameOver"> GAME OVER</div>
+		<div id="instruction" class="screen"> <img src="images/tastaturbelegung.png" height="200rem" width="560rem"> </div>
+		<div id="startbutton" class="screen" onclick="start()"> <img src="images/startbutton.gif" height="120rem" width="300rem"> </div>
+		<!--<div id="start" onclick="start()">LET'S GO</div>-->
+
+		<script src="js/three.min.js"></script>
+		<!-- Kamerasteuerung per Maus zu Debugzwecken; in offizieller three.js Bibliothek enthalten -->
+		<script src="js/OrbitControls.js"></script>
+
+		<script>
+			//globale Variabeln
+			// aktuelles Datum in Millisek.
+			var startTime = Date.now();
+
+			//Geht das Spiel los?
+			var go = false;
+
+			//Punkte
+			var score = 0;
+
+			//Highscore
+			var highscore = 0;
+
+			//Szene
+			var scene = new THREE.Scene();
+
+			//Kamera
+			var WIDTH = window.innerWidth;
+			var HEIGHT = window.innerHeight;
+			var camera = new THREE.PerspectiveCamera(45, WIDTH/HEIGHT, 0.1, 10000);
+			scene.add(camera);
+			//Kamera weiter in Richtung +z setzen, da sich Szene am Ursprung abspielen soll
+			camera.position.z = 100;
+
+			//Renderer
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize(WIDTH, HEIGHT);
+			document.body.appendChild(renderer.domElement);
+
+			//Einbindung der Kamerasteuerung
+			var controls = new THREE.OrbitControls(camera, render);
+
+			//Raumschiff
+			var shipgeo = new THREE.CylinderGeometry(0, 10, 10, 4, 1, true);
+			var shipmat = new THREE.MeshBasicMaterial({color: 0x00ff00, wireframe: true});
+			var ship = new THREE.Mesh(shipgeo, shipmat);
+
+			ship.position.y = -20;
+			ship.position.z = 0;
+			ship.rotation.x = -0.5*Math.PI;
+
+			scene.add(ship);
+
+			//alle Meteoriten
+			var meteorits  = [];
+
+			for ( i = 0; i < 20; i++) {
+				var geometry = new THREE.SphereGeometry(8, 4, 4);
+				var material = new THREE.MeshBasicMaterial({color: 0x6a6a6a, wireframe: false});
+				var met = new THREE.Mesh(geometry, material);
+
+				met.position.z = (Math.random() * (-1000 - (1000)) + (1000));
+				met.position.x = (Math.random() * (85 - (-85)) + (-85));
+				met.position.y = (Math.random() * (85 - (-85)) + (-85));
+
+				scene.add(met);
+				meteorits.push(met);
+			}
+
+			//Sternenhimmel
+			var sphere = new THREE.SphereGeometry( 1, 8, 8 );
+			var starmat = new THREE.MeshBasicMaterial( { color: 0xffffff, specular: 0xffffff, shininess: 50 } );
+			var stars = [];
+
+			for (var i = 0; i < 5000; i ++) {
+
+				var star = new THREE.Mesh(sphere, starmat);
+
+				star.position.x = 3000 * (2.0 * Math.random() - 1.0);
+				star.position.y = 3000 * (2.0 * Math.random() - 1.0);
+				star.position.z = (Math.random() * (100 - (-3000)) + (-3000));
+
+				scene.add(star);
+				stars.push(star);
+			}
+
+
+			var bullets = [];
+
+			function shoot(){
+				//Projektile erstellen
+				var bulletGeo = new THREE.SphereGeometry(1, 32, 32);
+				var bulletMat = new THREE.MeshBasicMaterial({color: 0xff0000});
+				var bullet = new THREE.Mesh(bulletGeo, bulletMat);
+
+				//Aus dem Bug schießen
+				bullet.position.x = ship.position.x;
+				bullet.position.y = ship.position.y;
+				bullet.position.z = ship.position.z - 11;
+				if (bullets.length <= 2) {
+					scene.add(bullet);
+					bullets.push(bullet);
+				}
+			}
+
+			function bulletMov(){
+				//Projektile nach vorne bewegen
+				for (i = 0; i < bullets.length; i++) {
+					bullets[i].position.z -= 1.5;
+
+					if (bullets[i].position.z < -150) {
+						scene.remove(bullets[i]);
+						bullets.shift();
+						//console.log(bullets.toString());
+					}
+
+				}
+			}
+
+				//Meteoriten bewegen
+			function meteorit() {
+				for (i = 0; i < meteorits.length; i++) {
+					//Meteorit bewegen um x- und y-Achse; z-Position
+					//meteorits[i].rotation.x += 0.01;
+					//meteorits[i].rotation.y += 0.01;
+					meteorits[i].position.z += 2.5;
+
+				//Meteoriten verschieben wenn hinter Kamera
+					if (meteorits[i].position.z >= 100) {
+						meteorits[i].position.z = (Math.random() * (200 - (-200)) + (-200)) -1000;
+						meteorits[i].position.x = (Math.random() * (100 - (-100)) + (-100));
+						meteorits[i].position.y = (Math.random() * (100 - (-100)) + (-100));
+						meteorits[i].visible = true;
+					}
+					//Geschwindigkeit erhöhen bei gößerer Punktzahl
+					else if (score >= 2500) {
+						meteorits[i].position.z += 2.5;
+					}
+
+					else if (score >= 10000) {
+						meteorits[i].position.z += 5;
+					}
+
+					if (!go) {
+						//random Color-Picker von http://www.paulirish.com/2009/random-hex-color-code-snippets/
+						meteorits[i].material.color.setHex('0x'+(Math.floor(Math.random()*16777215).toString(16)));
+					}
+
+					if (go) {
+						meteorits[i].material.color.setHex(0x6a6a6a);
+					}
+
+					//schwingende Bewegung mit Hilfe der Zeitdifferenz
+					//meteorits[i].position.x += Math.random() * 8 * Math.sin(timeDelta * 0.001);
+
+					//Position Debug
+					//console.log(meteorits[i].position.x);
+					}
+				}
+
+				//Sternbewegung; Funktion gleich zu Meteoriten
+				function starMov() {
+					for (i = 0; i < stars.length; i++) {
+						//Sterne bewegen
+						stars[i].position.z += 1.0;
+
+						//Sterne verschieben wenn hinter Kamera
+						if (stars[i].position.z >= 100) {
+							stars[i].position.x = 3000 * (2.0 * Math.random() - 1.0);
+							stars[i].position.y = 3000 * (2.0 * Math.random() - 1.0);
+							stars[i].position.z = -3000;//(Math.random() * (100 - (-3000)) + (-3000));
+						}
+					}
+				}
+
+				//Steuerung des Schiffs
+				function shipcontrols(event) {
+					switch(event.keyCode) {
+						//Pfeiltaste oben
+						case 38: ship.position.y += 5;
+						break;
+						//Pfeiltaste unten
+						case 40: ship.position.y -= 5;
+						break;
+						//Pfeiltaste links
+						case 37: ship.position.x -= 5;
+						break;
+						//Pfeiltaste rechts
+						case 39: ship.position.x += 5;
+						break;
+						// Leertaste
+						case 32: shoot();
+						break;
+					}
+				}
+
+				//Kollision allgemein (für Meteoriten und Projektile)
+				function collision(obj) {
+
+		      var originPoint = obj.position.clone();
+
+		    	for (var vertexIndex = 0; vertexIndex < obj.geometry.vertices.length; vertexIndex++) {
+		      	var localVertex = obj.geometry.vertices[vertexIndex].clone();
+		      	var globalVertex = localVertex.applyMatrix4(obj.matrix);
+		      	var directionVector = globalVertex.sub(obj.position);
+
+		        var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
+		        var collisionResults = ray.intersectObjects(meteorits);
+		        if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
+		        	if (obj == ship && collisionResults[0].object.visible == true) {shipHit()}
+							else {bulletHit(collisionResults[0].object)}
+		        }
+					}
+				}
+
+				//Punktezähler
+				function scores() {
+					score += 0.25;
+
+		      document.getElementById('score').innerHTML = Math.round(score/10) * 10;
+
+					if (highscore < score) {
+						highscore = score;
+						document.getElementById('highscore').innerHTML = "highscore: " + (Math.round(highscore/10) * 10);
+					}
+				}
+
+
+				//Schiff trifft Meteorit
+				function shipHit() {
+					//score = 0;
+					gameOver();
+				}
+
+				//Projektil trifft Meteorit
+				function bulletHit(obj) {
+				 	obj.visible = false;
+					score += 0.5;
+				}
+
+				function start() {
+					go = true;
+					score = 0;
+					document.getElementById('score').innerHTML = 0;
+					//document.getElementById('title').style.display='none';
+					document.getElementById('highscore').style.display='none';
+					//document.getElementById('start').style.display='none';
+					document.getElementById('gameOver').style.display = 'none';
+					document.getElementById('instruction').style.display = 'none';
+					document.getElementById('titleimage').style.display = 'none';
+					document.getElementById('startbutton').style.display = 'none';
+				}
+
+				function gameOver() {
+					go = false;
+					//document.getElementById('title').style.display='block';
+					document.getElementById('highscore').style.display='block';
+					//document.getElementById('start').style.display='block';
+					document.getElementById('gameOver').style.display = 'block';
+					document.getElementById('titleimage').style.display = 'block';
+					document.getElementById('startbutton').style.display = 'block';
+
+				}
+
+			//Schleifenfunktion zum rendern; 60fps
+			var render = function() {
+				requestAnimationFrame(render);
+
+				//timeDelta = Date.now() - startTime;
+
+				meteorit();
+				starMov();
+				//collision(ship);
+				//scores();
+				bulletMov();
+				//for(i = 0; i < bullets.length; i++) {collision(bullets[i])};
+
+				if (go) {
+					collision(ship);
+					scores();
+					for(i = 0; i < bullets.length; i++) {collision(bullets[i])};
+				}
+
+				//Eventlistener für die Tastatureingaben bei 'keydown'-Events. Diese werden
+				//an die Schiffssteuerung weitergegeben.
+				window.addEventListener('keydown', shipcontrols);
+
+				renderer.render(scene, camera);
+			};
+
+			render();
+
+		</script>
+	</body>
+</html>

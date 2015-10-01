@@ -1,0 +1,93 @@
+/**
+			CSS für three.js Spiel
+				Spacetacular
+			von Stefanie Zahn
+**/
+
+
+body {
+	margin: 0;
+	background-color: #000;
+	font-family: sans-serif;
+}
+
+canvas {
+	padding 0;
+	margin: auto;
+	display: block;
+	position: relative;
+}
+
+.screen {
+	color: #fff;
+	position: absolute;
+	z-index: 999;
+}
+
+#score {
+	position: absolute;
+	z-index: 9999;
+	font-size: 4rem;
+	top:5%;
+	right: 5%;
+}
+
+#title {
+top: 20%;
+text-align: center;
+width: 100%;
+display: block;
+font-size: 3.5rem;
+text-transform: uppercase;
+}
+
+#titleimage {
+	left: 32%;
+	top: 7%;
+}
+
+#highscore {
+	width: 100%;
+	text-align: center;
+	font-size: 1.5rem;
+	text-transform: uppercase;
+	top:5%;
+}
+
+#instruction {
+	left: 36%;
+	top: 40%;
+}
+
+#startbutton {
+	left: 42%;
+	top: 67%;
+	cursor: pointer;
+}
+
+#start {
+	color: #fff;
+	border-radius: 0.2rem;
+	border: 0.2rem solid #61a02d;
+	position: absolute;
+	z-index: 9999;
+	width: 8.2em;
+	text-align: center;
+	top:70%;
+	font-size: 3rem;
+	left: 40%;
+	background-color: rgba(97, 160, 45, 0.7);
+	cursor: pointer;
+}
+
+
+#gameOver {
+	color: #b71e1b;
+	width: 100%;
+	text-align: center;
+	font-size: 7rem;
+	top: 47%;
+	display: none;
+	z-index: 9999;
+	position: absolute;
+}
